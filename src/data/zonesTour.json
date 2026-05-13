@@ -1,0 +1,16 @@
+{
+  "_instrucciones": {
+    "from": "índice del panorama origen (0 = primer 360_*.jpg ordenado alfabéticamente)",
+    "to":   "índice del panorama destino",
+    "yaw":  "ángulo horizontal en grados (-180 a 180). 0 = frente, 90 = derecha, -90 = izquierda",
+    "pitch":"ángulo vertical en grados. 0 = horizonte, -20 = ligeramente abajo",
+    "label":"texto que aparece bajo la flecha (opcional)"
+  },
+  "CD": [
+    { "from": 0, "to": 1, "yaw": 30,   "pitch": -12, "label": "Siguiente" },
+    { "from": 1, "to": 0, "yaw": -150, "pitch": -12, "label": "Volver"    }
+  ],
+  "PM": [],
+  "EM": [],
+  "CG": []
+}
