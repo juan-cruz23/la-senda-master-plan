@@ -3,8 +3,22 @@
  * Panel lateral derecho que se desliza al seleccionar un lote.
  * El canvas se comprime para mantener el lote visible.
  */
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Maximize2 } from 'lucide-react'
+import { X, Maximize2, ChevronLeft, ChevronRight, ImageOff } from 'lucide-react'
+
+// Carga todas las imágenes de implantación agrupadas por topografía
+const allImplantaciones = import.meta.glob(
+  '../assets/implantaciones/**/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG}',
+  { eager: true }
+)
+
+function getImplantImages(topografia) {
+  const key = topografia ?? 'Standard'
+  return Object.entries(allImplantaciones)
+    .filter(([path]) => path.includes(`/implantaciones/${key}/`))
+    .map(([, mod]) => mod.default)
+}
 
 export const PANEL_W = 400
 
@@ -29,13 +43,16 @@ const fmtCOP = n => new Intl.NumberFormat('es-CO', {
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = false }) {
-  const cfg  = ESTADO_CFG[lote?.estado] ?? ESTADO_CFG.disponible
-  const topo = TOPO_CFG[lote?.topografia] ?? { color: '#C4B49A', bg: 'rgba(154,125,74,0.08)', desc: '' }
+  const cfg    = ESTADO_CFG[lote?.estado] ?? ESTADO_CFG.disponible
+  const topo   = TOPO_CFG[lote?.topografia] ?? { color: '#C4B49A', bg: 'rgba(154,125,74,0.08)', desc: '' }
+  const images = lote ? getImplantImages(lote.topografia) : []
+  const [imgIdx, setImgIdx] = useState(0)
 
   return (
     <AnimatePresence>
       {lote && (
         <motion.div
+          id="lote-panel"
           key={lote.id}
           initial={{ x: PANEL_W }}
           animate={{ x: 0 }}
@@ -48,11 +65,11 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
             zIndex: 9100,
             display: 'flex',
             flexDirection: 'column',
-            background: 'rgba(10,22,34,0.97)',
-            backdropFilter: 'blur(52px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(52px) saturate(180%)',
-            borderLeft: '1px solid rgba(196,180,154,0.12)',
-            boxShadow: '-24px 0 72px rgba(0,0,0,0.55)',
+            background: 'rgba(10,22,34,0.84)',
+            backdropFilter: 'blur(80px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(80px) saturate(200%)',
+            borderLeft: '1px solid rgba(196,180,154,0.18)',
+            boxShadow: '-24px 0 72px rgba(0,0,0,0.35)',
             pointerEvents: 'auto',
           }}
         >
@@ -197,6 +214,66 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
                   </p>
                   <span style={{ color: 'rgba(255,255,255,0.38)', fontSize: 14, fontWeight: 600, ...F }}>m²</span>
                 </div>
+              </div>
+
+              {/* ── Implantación sugerida ── */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                  <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', ...F }}>
+                    Implantación sugerida
+                  </span>
+                  {images.length > 1 && (
+                    <span style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.22)', fontSize: 10, fontWeight: 600, ...F }}>
+                      {imgIdx + 1} / {images.length}
+                    </span>
+                  )}
+                </div>
+
+                {images.length === 0 ? (
+                  <div style={{
+                    height: 180, borderRadius: 14,
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px dashed rgba(255,255,255,0.10)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  }}>
+                    <ImageOff size={22} color="rgba(255,255,255,0.15)" />
+                    <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11, ...F }}>Próximamente</span>
+                  </div>
+                ) : (
+                  <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', height: 200 }}>
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={imgIdx}
+                        src={images[imgIdx]}
+                        alt="Implantación"
+                        initial={{ opacity: 0, scale: 1.04 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.28 }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
+                    </AnimatePresence>
+
+                    {images.length > 1 && (
+                      <>
+                        <button onClick={e => { e.stopPropagation(); setImgIdx(i => (i - 1 + images.length) % images.length) }}
+                          style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', width: 30, height: 30, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ChevronLeft size={15} />
+                        </button>
+                        <button onClick={e => { e.stopPropagation(); setImgIdx(i => (i + 1) % images.length) }}
+                          style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', width: 30, height: 30, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ChevronRight size={15} />
+                        </button>
+                        <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 5 }}>
+                          {images.map((_, i) => (
+                            <button key={i} onClick={e => { e.stopPropagation(); setImgIdx(i) }}
+                              style={{ width: i === imgIdx ? 18 : 6, height: 6, borderRadius: 3, border: 'none', cursor: 'pointer', padding: 0, background: i === imgIdx ? '#fff' : 'rgba(255,255,255,0.4)', transition: 'all .2s' }} />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
 
             </div>

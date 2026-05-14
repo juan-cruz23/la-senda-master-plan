@@ -29,22 +29,22 @@ const ESTADO_CFG = {
 // ── Glass tokens ─────────────────────────────────────────────────────────────
 const glass = {
   panel: {
-    background: 'rgba(10,22,34,0.88)',
-    backdropFilter: 'blur(52px) saturate(160%)',
-    WebkitBackdropFilter: 'blur(52px) saturate(160%)',
-    border: '1px solid rgba(196,180,154,0.12)',
-    boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(196,180,154,0.05)',
+    background: 'rgba(10,22,34,0.82)',
+    backdropFilter: 'blur(80px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(80px) saturate(180%)',
+    border: '1px solid rgba(196,180,154,0.18)',
+    boxShadow: '0 32px 80px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.07)',
   },
   dock: {
-    background: 'rgba(11,30,45,0.90)',
-    backdropFilter: 'blur(40px) saturate(160%)',
-    WebkitBackdropFilter: 'blur(40px) saturate(160%)',
-    border: '1px solid rgba(196,180,154,0.12)',
-    boxShadow: '0 16px 48px rgba(0,0,0,0.45), 0 4px 12px rgba(0,0,0,0.3)',
+    background: 'rgba(11,30,45,0.80)',
+    backdropFilter: 'blur(72px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+    border: '1px solid rgba(196,180,154,0.18)',
+    boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
   },
   card: {
-    background: 'rgba(196,180,154,0.05)',
-    border: '1px solid rgba(196,180,154,0.1)',
+    background: 'rgba(196,180,154,0.06)',
+    border: '1px solid rgba(196,180,154,0.12)',
     borderRadius: 14,
   },
 }

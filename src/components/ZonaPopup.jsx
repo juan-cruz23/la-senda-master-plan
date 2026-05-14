@@ -9,10 +9,10 @@ import { X, ChevronRight } from 'lucide-react'
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 const glass = {
-  background: 'rgba(10,22,34,0.96)',
-  backdropFilter: 'blur(52px) saturate(180%)',
-  WebkitBackdropFilter: 'blur(52px) saturate(180%)',
-  boxShadow: '0 24px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+  background: 'rgba(10,22,34,0.82)',
+  backdropFilter: 'blur(80px) saturate(200%)',
+  WebkitBackdropFilter: 'blur(80px) saturate(200%)',
+  boxShadow: '0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
 }
 
 export default function ZonaPopup({ zona, offset = 80, onClose, onOpenPanel }) {

@@ -96,6 +96,19 @@ export default function MasterplanView() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Cerrar LotePanel al hacer click fuera de él
+  useEffect(() => {
+    if (!selectedLote) return
+    const handler = e => {
+      const panel = document.getElementById('lote-panel')
+      if (panel && panel.contains(e.target)) return
+      setSelectedLote(null)
+    }
+    // Fase de captura: se ejecuta antes que los handlers de los hijos
+    document.addEventListener('click', handler, true)
+    return () => document.removeEventListener('click', handler, true)
+  }, [selectedLote])
+
   // Cerrar panels de zona con Esc
   useEffect(() => {
     const onKey = e => {
@@ -259,11 +272,11 @@ export default function MasterplanView() {
                       <div style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         padding: '6px 16px', borderRadius: 16,
-                        background: 'rgba(11,30,45,0.85)',
-                        backdropFilter: 'blur(52px) saturate(160%)',
-                        WebkitBackdropFilter: 'blur(52px) saturate(160%)',
-                        border: '1px solid rgba(196,180,154,0.15)',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(196,180,154,0.06)',
+                        background: 'rgba(11,30,45,0.80)',
+                        backdropFilter: 'blur(72px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                        border: '1px solid rgba(196,180,154,0.20)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07)',
                       }}>
                         <img src="/logo.png" alt="NATIVE"
                           style={{ width: 200, height: 'auto', display: 'block' }} />
@@ -279,10 +292,10 @@ export default function MasterplanView() {
                   onClick={() => session ? supabase.auth.signOut() : setShowLogin(true)}
                   title={session ? 'Cerrar sesión' : 'Iniciar sesión'}
                   className="absolute right-4 bottom-6 w-9 h-9 rounded-xl flex items-center justify-center transition-all pointer-events-auto"
-                  style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(11,30,45,0.85)',
-                    backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)',
-                    border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(196,180,154,0.15)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.35)', color: session ? '#4ECDC4' : 'rgba(255,255,255,0.35)' }}>
+                  style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(11,30,45,0.80)',
+                    backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                    border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(196,180,154,0.20)',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: session ? '#4ECDC4' : 'rgba(255,255,255,0.45)' }}>
                   {session ? <LogOut size={14} /> : <LogIn size={14} />}
                 </motion.button>
 
@@ -305,7 +318,7 @@ export default function MasterplanView() {
                   ].map(({ icon, action, label }) => (
                     <button key={label} onClick={action} title={label}
                       className="w-9 h-9 rounded-xl flex items-center justify-center text-white/40 hover:text-white/80 transition-all"
-                      style={{ background: 'rgba(11,30,45,0.85)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)', border: '1px solid rgba(196,180,154,0.15)', boxShadow: '0 4px 16px rgba(0,0,0,0.35)', pointerEvents: 'auto' }}>
+                      style={{ background: 'rgba(11,30,45,0.80)', backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)', border: '1px solid rgba(196,180,154,0.20)', boxShadow: '0 4px 16px rgba(0,0,0,0.25)', pointerEvents: 'auto' }}>
                       {icon}
                     </button>
                   ))}
@@ -371,8 +384,8 @@ export default function MasterplanView() {
           top:  zonaTooltip.y - 12,
           zIndex: 9999,
           pointerEvents: 'none',
-          background: 'rgba(11,30,45,0.95)',
-          backdropFilter: 'blur(32px) saturate(160%)',
+          background: 'rgba(11,30,45,0.82)',
+          backdropFilter: 'blur(72px) saturate(180%)',
           WebkitBackdropFilter: 'blur(32px) saturate(160%)',
           border: `1px solid ${zonaTooltip.zona.color}55`,
           borderRadius: 14,
