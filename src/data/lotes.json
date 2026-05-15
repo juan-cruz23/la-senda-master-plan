@@ -54,5 +54,9 @@
   { "id": "L52", "nombre": "Lote 52", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1836, "cy": 506 },
   { "id": "L53", "nombre": "Lote 53", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1831, "cy": 683 },
   { "id": "L54", "nombre": "Lote 54", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1798, "cy": 855 },
-  { "id": "L55", "nombre": "Lote 55", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1981, "cy": 1215 }
+  { "id": "L55", "nombre": "Lote 55", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1981, "cy": 1215 },
+  { "id": "L56", "nombre": "Lote 56", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1651, "cy": 1482 },
+  { "id": "L57", "nombre": "Lote 57", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1595, "cy": 1597 },
+  { "id": "L58", "nombre": "Lote 58", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1453, "cy": 1447 },
+  { "id": "L59", "nombre": "Lote 59", "area": 0, "topografia": "Standard", "estado": "disponible", "cx": 1366, "cy": 1533 }
 ]

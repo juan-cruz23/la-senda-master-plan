@@ -14,7 +14,7 @@ const makeId = n => `L${PAD(n)}`
 const MARKER_COLOR = '#0D2E40'
 const MARKER_BORDER = '#7BBFDA'
 
-export default function CoordPicker({ imgW, imgH }) {
+export default function CoordPicker({ imgW, imgH, startNum: initialStartNum = 0 }) {
   const [mode, setMode]           = useState('centros')
   const [cursor, setCursor]       = useState({ x: 0, y: 0 })
   const [panelOpen, setPanelOpen] = useState(true)
@@ -25,8 +25,8 @@ export default function CoordPicker({ imgW, imgH }) {
   const [loteId, setLoteId]       = useState('')
 
   // ── Centros: lista ordenada de puntos colocados ────────────────────────────
-  const [placements, setPlacements] = useState([])   // [{ id:'L01', cx, cy }, …]
-  const [startNum, setStartNum]     = useState(0)     // número del primer lote
+  const [placements, setPlacements] = useState([])
+  const [startNum, setStartNum]     = useState(initialStartNum)
   const [copied, setCopied]         = useState(false)
 
   // ──────────────────────────────────────────────────────────────────────────

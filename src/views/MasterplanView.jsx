@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
-import { ZoomIn, ZoomOut, Maximize2, LogIn, LogOut, Loader2 } from 'lucide-react'
+import { ZoomIn, ZoomOut, Maximize2, LogIn, LogOut, Loader2, Expand, Shrink } from 'lucide-react'
 
 import zonas        from '../data/zonas.json'
 import lotesInit    from '../data/lotes.json'
@@ -77,9 +77,24 @@ export default function MasterplanView() {
   const [zonePopup,   setZonePopup]    = useState(null)
   const [galleryZona, setGalleryZona]  = useState(null)
   const [clickedZona, setClickedZona]  = useState(null)
-  const [session,     setSession]      = useState(null)   // usuario logueado
+  const [session,     setSession]      = useState(null)
   const [showLogin,   setShowLogin]    = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const transformRef = useRef(null)
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.()
+    } else {
+      document.exitFullscreen?.()
+    }
+  }
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', handler)
+    return () => document.removeEventListener('fullscreenchange', handler)
+  }, [])
 
   // Cargar sesión activa y estados desde Supabase al montar
   useEffect(() => {
@@ -286,18 +301,34 @@ export default function MasterplanView() {
 
                 </div>
 
-                {/* Botón login / logout */}
-                <motion.button
+                {/* Botones esquina inferior derecha */}
+                <motion.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
-                  onClick={() => session ? supabase.auth.signOut() : setShowLogin(true)}
-                  title={session ? 'Cerrar sesión' : 'Iniciar sesión'}
-                  className="absolute right-4 bottom-6 w-9 h-9 rounded-xl flex items-center justify-center transition-all pointer-events-auto"
-                  style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(11,30,45,0.80)',
-                    backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)',
-                    border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(196,180,154,0.20)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: session ? '#4ECDC4' : 'rgba(255,255,255,0.45)' }}>
-                  {session ? <LogOut size={14} /> : <LogIn size={14} />}
-                </motion.button>
+                  className="absolute right-4 bottom-6 flex flex-col gap-1.5 pointer-events-auto"
+                >
+                  {/* Pantalla completa */}
+                  <button
+                    onClick={toggleFullscreen}
+                    title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                    style={{ background: isFullscreen ? 'rgba(196,180,154,0.15)' : 'rgba(11,30,45,0.80)',
+                      backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                      border: isFullscreen ? '1px solid rgba(196,180,154,0.4)' : '1px solid rgba(196,180,154,0.20)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: isFullscreen ? '#C4B49A' : 'rgba(255,255,255,0.45)' }}>
+                    {isFullscreen ? <Shrink size={14} /> : <Expand size={14} />}
+                  </button>
+                  {/* Login / logout */}
+                  <button
+                    onClick={() => session ? supabase.auth.signOut() : setShowLogin(true)}
+                    title={session ? 'Cerrar sesión' : 'Iniciar sesión'}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                    style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(11,30,45,0.80)',
+                      backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                      border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(196,180,154,0.20)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: session ? '#4ECDC4' : 'rgba(255,255,255,0.45)' }}>
+                    {session ? <LogOut size={14} /> : <LogIn size={14} />}
+                  </button>
+                </motion.div>
 
                 {/* Controles de zoom */}
                 <motion.div
