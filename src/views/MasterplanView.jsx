@@ -111,15 +111,16 @@ export default function MasterplanView() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Cerrar LotePanel al hacer click fuera de él
+  // Cerrar LotePanel al hacer click fuera de él (el lightbox maneja su propio cierre)
   useEffect(() => {
     if (!selectedLote) return
     const handler = e => {
-      const panel = document.getElementById('lote-panel')
-      if (panel && panel.contains(e.target)) return
+      const panel    = document.getElementById('lote-panel')
+      const lightbox = document.getElementById('lote-lightbox')
+      if (panel    && panel.contains(e.target))    return
+      if (lightbox && lightbox.contains(e.target)) return
       setSelectedLote(null)
     }
-    // Fase de captura: se ejecuta antes que los handlers de los hijos
     document.addEventListener('click', handler, true)
     return () => document.removeEventListener('click', handler, true)
   }, [selectedLote])
