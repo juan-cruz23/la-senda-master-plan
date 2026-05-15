@@ -3,9 +3,9 @@
  * Panel lateral derecho que se desliza al seleccionar un lote.
  * El canvas se comprime para mantener el lote visible.
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Maximize2, ChevronLeft, ChevronRight, ImageOff } from 'lucide-react'
+import { X, Maximize2, ChevronLeft, ChevronRight, ImageOff, Expand } from 'lucide-react'
 
 // Carga todas las imágenes de implantación agrupadas por topografía
 const allImplantaciones = import.meta.glob(
@@ -43,10 +43,24 @@ const fmtCOP = n => new Intl.NumberFormat('es-CO', {
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = false }) {
-  const cfg    = ESTADO_CFG[lote?.estado] ?? ESTADO_CFG.disponible
-  const topo   = TOPO_CFG[lote?.topografia] ?? { color: '#C4B49A', bg: 'rgba(154,125,74,0.08)', desc: '' }
-  const images = lote ? getImplantImages(lote.topografia) : []
-  const [imgIdx, setImgIdx] = useState(0)
+  const cfg      = ESTADO_CFG[lote?.estado] ?? ESTADO_CFG.disponible
+  const topo     = TOPO_CFG[lote?.topografia] ?? { color: '#C4B49A', bg: 'rgba(154,125,74,0.08)', desc: '' }
+  const images   = lote ? getImplantImages(lote.topografia) : []
+  const [imgIdx,    setImgIdx]    = useState(0)
+  const [lightbox,  setLightbox]  = useState(false)
+
+  // Reset al cambiar de lote
+  useEffect(() => {
+    setLightbox(false)
+    setImgIdx(0)
+  }, [lote?.id])
+
+  useEffect(() => {
+    if (!lightbox) return
+    const fn = e => { if (e.key === 'Escape') setLightbox(false) }
+    window.addEventListener('keydown', fn)
+    return () => window.removeEventListener('keydown', fn)
+  }, [lightbox])
 
   return (
     <AnimatePresence>
@@ -216,31 +230,48 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
                 </div>
               </div>
 
+              {/* ── Separador ── */}
+              <div style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
+
               {/* ── Implantación sugerida ── */}
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-                  <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', ...F }}>
-                    Implantación sugerida
-                  </span>
+                {/* Header de sección */}
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div>
+                    <p style={{ margin: '0 0 3px', color: 'rgba(255,255,255,0.28)', fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', ...F }}>
+                      Implantación sugerida
+                    </p>
+                    <p style={{ margin: 0, color: topo.color, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', ...F }}>
+                      {topo.nombre ?? lote.topografia}
+                    </p>
+                  </div>
                   {images.length > 1 && (
-                    <span style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.22)', fontSize: 10, fontWeight: 600, ...F }}>
+                    <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 11, fontWeight: 600, ...F, paddingBottom: 1 }}>
                       {imgIdx + 1} / {images.length}
                     </span>
                   )}
                 </div>
 
+                {/* Área de imagen */}
                 {images.length === 0 ? (
                   <div style={{
-                    height: 180, borderRadius: 14,
+                    height: 200, borderRadius: 16,
                     background: 'rgba(255,255,255,0.03)',
-                    border: '1px dashed rgba(255,255,255,0.10)',
+                    border: '1px dashed rgba(255,255,255,0.08)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10,
                   }}>
-                    <ImageOff size={22} color="rgba(255,255,255,0.15)" />
-                    <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 11, ...F }}>Próximamente</span>
+                    <ImageOff size={22} color="rgba(255,255,255,0.10)" />
+                    <span style={{ color: 'rgba(255,255,255,0.16)', fontSize: 11, fontWeight: 500, ...F }}>Próximamente</span>
                   </div>
                 ) : (
-                  <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', height: 200 }}>
+                  <div
+                    onClick={e => { e.stopPropagation(); setLightbox(true) }}
+                    style={{
+                      position: 'relative', borderRadius: 16, overflow: 'hidden',
+                      height: 220, cursor: 'zoom-in',
+                      boxShadow: `0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px ${topo.color}22`,
+                    }}
+                  >
                     <AnimatePresence mode="wait">
                       <motion.img
                         key={imgIdx}
@@ -254,20 +285,35 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
                       />
                     </AnimatePresence>
 
+                    {/* Gradiente */}
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)', pointerEvents: 'none' }} />
+
+                    {/* Ampliar hint */}
+                    <div style={{ position: 'absolute', bottom: 11, left: 14, display: 'flex', alignItems: 'center', gap: 5, pointerEvents: 'none' }}>
+                      <Expand size={11} color="rgba(255,255,255,0.55)" />
+                      <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 10, fontWeight: 600, ...F }}>Toca para ampliar</span>
+                    </div>
+
+                    {/* Dots + flechas */}
                     {images.length > 1 && (
                       <>
-                        <button onClick={e => { e.stopPropagation(); setImgIdx(i => (i - 1 + images.length) % images.length) }}
-                          style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', width: 30, height: 30, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <ChevronLeft size={15} />
+                        <button
+                          onClick={e => { e.stopPropagation(); setImgIdx(i => (i - 1 + images.length) % images.length) }}
+                          style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 34, height: 34, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(10px)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ChevronLeft size={17} />
                         </button>
-                        <button onClick={e => { e.stopPropagation(); setImgIdx(i => (i + 1) % images.length) }}
-                          style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', width: 30, height: 30, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <ChevronRight size={15} />
+                        <button
+                          onClick={e => { e.stopPropagation(); setImgIdx(i => (i + 1) % images.length) }}
+                          style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', width: 34, height: 34, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(10px)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ChevronRight size={17} />
                         </button>
-                        <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 5 }}>
+                        <div style={{ position: 'absolute', bottom: 12, right: 14, display: 'flex', gap: 5 }}>
                           {images.map((_, i) => (
-                            <button key={i} onClick={e => { e.stopPropagation(); setImgIdx(i) }}
-                              style={{ width: i === imgIdx ? 18 : 6, height: 6, borderRadius: 3, border: 'none', cursor: 'pointer', padding: 0, background: i === imgIdx ? '#fff' : 'rgba(255,255,255,0.4)', transition: 'all .2s' }} />
+                            <button
+                              key={i}
+                              onClick={e => { e.stopPropagation(); setImgIdx(i) }}
+                              style={{ width: i === imgIdx ? 22 : 6, height: 6, borderRadius: 3, border: 'none', padding: 0, cursor: 'pointer', background: i === imgIdx ? topo.color : 'rgba(255,255,255,0.35)', transition: 'all .2s' }}
+                            />
                           ))}
                         </div>
                       </>
@@ -278,6 +324,65 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
 
             </div>
           </div>
+
+          {/* ── Lightbox — dentro del panel para que el listener no lo intercepte ── */}
+          <AnimatePresence>
+            {lightbox && images.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={e => { e.stopPropagation(); setLightbox(false) }}
+                style={{ position: 'fixed', inset: 0, zIndex: 9500, background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px' }}>
+                  <div>
+                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.35)', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', ...F }}>Implantación sugerida</p>
+                    <p style={{ margin: '2px 0 0', color: topo.color, fontSize: 14, fontWeight: 700, ...F }}>{topo.nombre}</p>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    {images.length > 1 && <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12, fontWeight: 600, ...F }}>{imgIdx + 1} / {images.length}</span>}
+                    <button onClick={e => { e.stopPropagation(); setLightbox(false) }}
+                      style={{ width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <X size={15} />
+                    </button>
+                  </div>
+                </div>
+
+                <motion.div onClick={e => e.stopPropagation()}
+                  style={{ maxWidth: '90vw', maxHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <AnimatePresence mode="wait">
+                    <motion.img key={imgIdx} src={images[imgIdx]} alt="Implantación"
+                      initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.25 }}
+                      style={{ maxWidth: '90vw', maxHeight: '80vh', objectFit: 'contain', borderRadius: 12, boxShadow: '0 32px 80px rgba(0,0,0,0.7)' }} />
+                  </AnimatePresence>
+                </motion.div>
+
+                {images.length > 1 && (
+                  <>
+                    <button onClick={e => { e.stopPropagation(); setImgIdx(i => (i - 1 + images.length) % images.length) }}
+                      style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', width: 48, height: 48, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <ChevronLeft size={22} />
+                    </button>
+                    <button onClick={e => { e.stopPropagation(); setImgIdx(i => (i + 1) % images.length) }}
+                      style={{ position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)', width: 48, height: 48, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <ChevronRight size={22} />
+                    </button>
+                    <div onClick={e => e.stopPropagation()}
+                      style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, padding: '8px 12px', borderRadius: 14, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)' }}>
+                      {images.map((src, i) => (
+                        <button key={i} onClick={e => { e.stopPropagation(); setImgIdx(i) }}
+                          style={{ width: i === imgIdx ? 64 : 44, height: i === imgIdx ? 44 : 32, borderRadius: 8, padding: 0, border: i === imgIdx ? `2px solid ${topo.color}` : '2px solid rgba(255,255,255,0.15)', overflow: 'hidden', cursor: 'pointer', transition: 'all .2s', flexShrink: 0 }}>
+                          <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </motion.div>
       )}
     </AnimatePresence>
