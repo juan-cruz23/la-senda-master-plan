@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'fs'
 import path from 'path'
 
@@ -54,8 +55,49 @@ function devSaverPlugin() {
 }
 
 export default defineConfig({
-  plugins: [react(), devSaverPlugin()],
+  plugins: [
+    react(),
+    devSaverPlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        // Cachea todo el bundle JS/CSS en la primera visita
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,woff2}'],
+        // Imágenes grandes → cache-first (sirve desde caché, actualiza en background)
+        runtimeCaching: [
+          {
+            urlPattern: /\.(?:webp|jpg|jpeg|png|svg)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 }, // 30 días
+            },
+          },
+          {
+            urlPattern: /\.(?:js|css)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'assets-cache' },
+          },
+        ],
+        // Aumenta límite para cachear imágenes grandes (360s son ~4MB)
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024, // 8 MB
+      },
+      manifest: {
+        name: 'NATIVE San José',
+        short_name: 'NATIVE',
+        description: 'Masterplan interactivo — Parcelación NATIVE',
+        theme_color: '#0a1622',
+        background_color: '#0a1622',
+        display: 'standalone',
+        orientation: 'landscape',
+        icons: [
+          { src: '/favi.png', sizes: '192x192', type: 'image/png' },
+          { src: '/favi.png', sizes: '512x512', type: 'image/png' },
+        ],
+      },
+    }),
+  ],
   server: {
-    host: true,   // expone en la red local para verlo desde el celular
+    host: true,
   },
 })
