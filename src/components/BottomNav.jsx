@@ -1,5 +1,6 @@
 ﻿import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useIsMobile } from '../hooks/useIsMobile'
 import {
   LayoutGrid, SlidersHorizontal, Landmark,
   Phone, CalendarDays, CheckCircle2,
@@ -55,6 +56,7 @@ const fadeUp  = { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 },
 
 // ─────────────────────────────────────────────────────────────────────────────
 export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEstados, onSelectZona }) {
+  const isMobile = useIsMobile()
   const lotes = lotesProp ?? lotesInit
 
   // Stats reactivos — se recalculan cuando cambia el estado de algún lote
@@ -101,7 +103,7 @@ export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEs
             animate={{ opacity: 1, y: 0,  scale: 1    }}
             exit={{   opacity: 0, y: 20, scale: 0.97 }}
             transition={spring}
-            style={{ ...glass.panel, width: 460, maxHeight: '64vh', pointerEvents: 'auto', borderRadius: 20, overflow: 'hidden' }}
+            style={{ ...glass.panel, width: isMobile ? 'calc(100vw - 32px)' : 460, maxHeight: '64vh', pointerEvents: 'auto', borderRadius: 20, overflow: 'hidden' }}
           >
             {/* Panel header */}
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -142,7 +144,7 @@ export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEs
             <button
               key={id}
               onClick={() => toggleTab(id)}
-              style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '10px 28px', borderRadius: 14, transition: 'all .2s', border: 'none', background: 'transparent', cursor: 'pointer' }}
+              style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: isMobile ? '12px 24px' : '10px 28px', borderRadius: 14, transition: 'all .2s', border: 'none', background: 'transparent', cursor: 'pointer', minWidth: isMobile ? 72 : 'auto' }}
             >
               {/* Active bg */}
               {isActive && (
