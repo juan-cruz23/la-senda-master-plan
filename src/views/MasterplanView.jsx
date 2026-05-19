@@ -292,8 +292,8 @@ export default function MasterplanView() {
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         padding: '6px 16px', borderRadius: 16,
                         background: 'rgba(11,30,45,0.80)',
-                        backdropFilter: 'blur(72px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                        backdropFilter: 'blur(20px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
                         border: '1px solid rgba(196,180,154,0.20)',
                         boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07)',
                       }}>
@@ -316,7 +316,7 @@ export default function MasterplanView() {
                     title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
                     className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
                     style={{ background: isFullscreen ? 'rgba(196,180,154,0.15)' : 'rgba(11,30,45,0.80)',
-                      backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                      backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)',
                       border: isFullscreen ? '1px solid rgba(196,180,154,0.4)' : '1px solid rgba(196,180,154,0.20)',
                       boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: isFullscreen ? '#C4B49A' : 'rgba(255,255,255,0.45)' }}>
                     {isFullscreen ? <Shrink size={14} /> : <Expand size={14} />}
@@ -327,7 +327,7 @@ export default function MasterplanView() {
                     title={session ? 'Cerrar sesión' : 'Iniciar sesión'}
                     className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
                     style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(11,30,45,0.80)',
-                      backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+                      backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)',
                       border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(196,180,154,0.20)',
                       boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: session ? '#4ECDC4' : 'rgba(255,255,255,0.45)' }}>
                     {session ? <LogOut size={14} /> : <LogIn size={14} />}
@@ -353,7 +353,7 @@ export default function MasterplanView() {
                   ].map(({ icon, action, label }) => (
                     <button key={label} onClick={action} title={label}
                       className="w-9 h-9 rounded-xl flex items-center justify-center text-white/40 hover:text-white/80 transition-all"
-                      style={{ background: 'rgba(11,30,45,0.80)', backdropFilter: 'blur(72px) saturate(180%)', WebkitBackdropFilter: 'blur(72px) saturate(180%)', border: '1px solid rgba(196,180,154,0.20)', boxShadow: '0 4px 16px rgba(0,0,0,0.25)', pointerEvents: 'auto' }}>
+                      style={{ background: 'rgba(11,30,45,0.80)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(196,180,154,0.20)', boxShadow: '0 4px 16px rgba(0,0,0,0.25)', pointerEvents: 'auto' }}>
                       {icon}
                     </button>
                   ))}
@@ -420,7 +420,7 @@ export default function MasterplanView() {
           zIndex: 9999,
           pointerEvents: 'none',
           background: 'rgba(11,30,45,0.82)',
-          backdropFilter: 'blur(72px) saturate(180%)',
+          backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(32px) saturate(160%)',
           border: `1px solid ${zonaTooltip.zona.color}55`,
           borderRadius: 14,
