@@ -308,7 +308,7 @@ export default function MasterplanView() {
                 {/* Botones esquina inferior derecha */}
                 <motion.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
-                  className="absolute right-4 bottom-6 flex flex-col gap-1.5 pointer-events-auto"
+                  style={{ position: 'absolute', right: 16, bottom: isMobile ? 100 : 24, display: 'flex', flexDirection: 'column', gap: 6, pointerEvents: 'auto' }}
                 >
                   {/* Pantalla completa */}
                   <button
@@ -338,7 +338,7 @@ export default function MasterplanView() {
                 <motion.div
                   initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.15 }}
-                  className="absolute left-4 bottom-6 flex flex-col gap-1.5"
+                  style={{ position: 'absolute', left: 16, bottom: isMobile ? 100 : 24, display: 'flex', flexDirection: 'column', gap: 6 }}
                 >
                   {[
                     { icon: <ZoomIn size={15} />,   action: () => zoomIn(0.5),  label: 'Zoom +' },
