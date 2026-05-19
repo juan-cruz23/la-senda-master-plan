@@ -55,4 +55,7 @@ function devSaverPlugin() {
 
 export default defineConfig({
   plugins: [react(), devSaverPlugin()],
+  server: {
+    host: true,   // expone en la red local para verlo desde el celular
+  },
 })

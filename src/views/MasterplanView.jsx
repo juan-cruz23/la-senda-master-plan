@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import { ZoomIn, ZoomOut, Maximize2, LogIn, LogOut, Loader2, Expand, Shrink } from 'lucide-react'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 import zonas        from '../data/zonas.json'
 import lotesInit    from '../data/lotes.json'
@@ -69,6 +70,7 @@ function LoginModal({ onClose, onLogin }) {
 }
 
 export default function MasterplanView() {
+  const isMobile = useIsMobile()
   const [imgNatural, setImgNatural]    = useState(null)
   const [filters, setFilters]          = useState({ estado: [], topo: [] })
   const [lotes, setLotes]              = useState(() => lotesInit.map(l => ({ ...l })))
@@ -213,7 +215,8 @@ export default function MasterplanView() {
           onClick={() => setZonePopup(null)}
           style={{
             position: 'absolute', top: 0, left: 0, bottom: 0,
-            right: selectedLote ? PANEL_W : 0,
+            // En móvil el panel superpone el mapa, no lo comprime
+            right: (!isMobile && selectedLote) ? PANEL_W : 0,
             transition: 'right 0.38s cubic-bezier(0.4,0,0.2,1)',
           }}>
         <TransformWrapper

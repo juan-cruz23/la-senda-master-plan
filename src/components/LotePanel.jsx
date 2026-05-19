@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Maximize2, ChevronLeft, ChevronRight, ImageOff, Expand } from 'lucide-react'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 // Carga todas las imágenes de implantación agrupadas por topografía
 const allImplantaciones = import.meta.glob(
@@ -43,6 +44,7 @@ const fmtCOP = n => new Intl.NumberFormat('es-CO', {
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = false }) {
+  const isMobile = useIsMobile()
   const cfg      = ESTADO_CFG[lote?.estado] ?? ESTADO_CFG.disponible
   const topo     = TOPO_CFG[lote?.topografia] ?? { color: '#C4B49A', bg: 'rgba(154,125,74,0.08)', desc: '' }
   const images   = lote ? getImplantImages(lote.topografia) : []
@@ -69,11 +71,27 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
         <motion.div
           id="lote-panel"
           key={lote.id}
-          initial={{ x: PANEL_W }}
-          animate={{ x: 0 }}
-          exit={{   x: PANEL_W }}
+          initial={isMobile ? { y: '100%' } : { x: PANEL_W }}
+          animate={isMobile ? { y: 0 }      : { x: 0 }}
+          exit={isMobile   ? { y: '100%' }  : { x: PANEL_W }}
           transition={{ type: 'spring', stiffness: 320, damping: 38 }}
-          style={{
+          style={isMobile ? {
+            // ── Mobile: bottom sheet ──
+            position: 'fixed',
+            bottom: 0, left: 0, right: 0,
+            maxHeight: '85vh',
+            zIndex: 9100,
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'rgba(10,22,34,0.97)',
+            backdropFilter: 'blur(40px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(40px) saturate(200%)',
+            borderTop: '1px solid rgba(196,180,154,0.18)',
+            borderRadius: '24px 24px 0 0',
+            boxShadow: '0 -24px 72px rgba(0,0,0,0.5)',
+            pointerEvents: 'auto',
+          } : {
+            // ── Desktop: side panel ──
             position: 'fixed',
             top: 0, right: 0, bottom: 0,
             width: PANEL_W,
@@ -88,6 +106,12 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
             pointerEvents: 'auto',
           }}
         >
+          {/* Drag handle — solo móvil */}
+          {isMobile && (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px', flexShrink: 0 }}>
+              <div style={{ width: 36, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.18)' }} />
+            </div>
+          )}
 
           {/* ── Header ── */}
           <div style={{
