@@ -64,6 +64,14 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
     return () => window.removeEventListener('keydown', fn)
   }, [lightbox])
 
+  // Preload siguiente imagen del carrusel
+  useEffect(() => {
+    if (images.length < 2) return
+    const next = images[(imgIdx + 1) % images.length]
+    const img = new Image()
+    img.src = next
+  }, [imgIdx, images])
+
   return (
     <>
     <AnimatePresence>
@@ -86,13 +94,14 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
             zIndex: 9100,
             display: 'flex',
             flexDirection: 'column',
-            background: 'rgba(10,22,34,0.97)',
-            backdropFilter: 'blur(40px) saturate(200%)',
-            WebkitBackdropFilter: 'blur(40px) saturate(200%)',
+            background: 'rgba(10,22,34,0.98)',
+            backdropFilter: 'blur(12px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(12px) saturate(180%)',
             borderTop: '1px solid rgba(196,180,154,0.18)',
             borderRadius: '24px 24px 0 0',
             boxShadow: '0 -24px 72px rgba(0,0,0,0.5)',
             pointerEvents: 'auto',
+            willChange: 'transform',
           } : {
             // ── Desktop: side panel ──
             position: 'fixed',
@@ -102,11 +111,12 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
             display: 'flex',
             flexDirection: 'column',
             background: 'rgba(10,22,34,0.84)',
-            backdropFilter: 'blur(80px) saturate(200%)',
-            WebkitBackdropFilter: 'blur(80px) saturate(200%)',
+            backdropFilter: 'blur(32px) saturate(200%)',
+            WebkitBackdropFilter: 'blur(32px) saturate(200%)',
             borderLeft: '1px solid rgba(196,180,154,0.18)',
             boxShadow: '-24px 0 72px rgba(0,0,0,0.35)',
             pointerEvents: 'auto',
+            willChange: 'transform',
           }}
         >
           {/* Drag handle — solo móvil */}
@@ -308,7 +318,8 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
                         initial={{ opacity: 0, scale: 1.04 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.28 }}
+                        transition={{ duration: 0.18 }}
+                        loading="lazy"
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                       />
                     </AnimatePresence>

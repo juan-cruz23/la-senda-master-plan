@@ -9,9 +9,9 @@ import { X, ChevronRight } from 'lucide-react'
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 const glass = {
-  background: 'rgba(10,22,34,0.82)',
-  backdropFilter: 'blur(80px) saturate(200%)',
-  WebkitBackdropFilter: 'blur(80px) saturate(200%)',
+  background: 'rgba(10,22,34,0.93)',
+  backdropFilter: 'blur(20px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
   boxShadow: '0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
 }
 
@@ -24,7 +24,7 @@ export default function ZonaPopup({ zona, offset = 80, onClose, onOpenPanel }) {
           initial={{ opacity: 0, y: 14, scale: 0.97 }}
           animate={{ opacity: 1, y: 0,  scale: 1    }}
           exit={{   opacity: 0, y: 8,  scale: 0.97 }}
-          transition={{ type: 'spring', stiffness: 420, damping: 36, mass: 0.85 }}
+          transition={{ type: 'spring', stiffness: 560, damping: 38, mass: 0.65 }}
           style={{
             position: 'fixed',
             left: '50%',

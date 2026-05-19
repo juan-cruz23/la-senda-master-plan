@@ -30,16 +30,16 @@ const ESTADO_CFG = {
 // ── Glass tokens ─────────────────────────────────────────────────────────────
 const glass = {
   panel: {
-    background: 'rgba(10,22,34,0.82)',
-    backdropFilter: 'blur(80px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(80px) saturate(180%)',
+    background: 'rgba(10,22,34,0.92)',
+    backdropFilter: 'blur(24px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(24px) saturate(180%)',
     border: '1px solid rgba(196,180,154,0.18)',
     boxShadow: '0 32px 80px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.07)',
   },
   dock: {
-    background: 'rgba(11,30,45,0.80)',
-    backdropFilter: 'blur(72px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(72px) saturate(180%)',
+    background: 'rgba(11,30,45,0.88)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
     border: '1px solid rgba(196,180,154,0.18)',
     boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
   },
@@ -51,8 +51,8 @@ const glass = {
 }
 
 // ── Animation ─────────────────────────────────────────────────────────────────
-const spring  = { type: 'spring', stiffness: 400, damping: 36, mass: 0.85 }
-const fadeUp  = { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 8 }, transition: { duration: 0.2 } }
+const spring  = { type: 'spring', stiffness: 520, damping: 38, mass: 0.7 }
+const fadeUp  = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 6 }, transition: { duration: 0.14 } }
 
 // ─────────────────────────────────────────────────────────────────────────────
 export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEstados, onSelectZona }) {
