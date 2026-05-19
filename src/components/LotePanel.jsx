@@ -74,7 +74,10 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
           initial={isMobile ? { y: '100%' } : { x: PANEL_W }}
           animate={isMobile ? { y: 0 }      : { x: 0 }}
           exit={isMobile   ? { y: '100%' }  : { x: PANEL_W }}
-          transition={{ type: 'spring', stiffness: 320, damping: 38 }}
+          transition={isMobile
+            ? { type: 'tween', ease: [0.32, 0.72, 0, 1], duration: 0.26 }
+            : { type: 'spring', stiffness: 320, damping: 38 }
+          }
           style={isMobile ? {
             // ── Mobile: bottom sheet ──
             position: 'fixed',
