@@ -35,16 +35,6 @@ export default function MaintenancePage() {
         NATIVE
       </div>
 
-      <div style={{
-        fontSize: 'clamp(10px, 1.5vw, 12px)',
-        letterSpacing: '0.28em',
-        textTransform: 'uppercase',
-        color: 'rgba(196,180,154,0.4)',
-        marginBottom: 64,
-      }}>
-        San José · Costa Rica
-      </div>
-
       {/* Separador */}
       <div style={{
         width: 48,
