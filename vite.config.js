@@ -59,7 +59,8 @@ export default defineConfig({
     react(),
     devSaverPlugin(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      selfDestroying: true,
       workbox: {
         // Cachea todo el bundle JS/CSS en la primera visita
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,woff2}'],
