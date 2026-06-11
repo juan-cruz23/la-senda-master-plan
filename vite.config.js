@@ -63,7 +63,7 @@ export default defineConfig({
       selfDestroying: true,
       workbox: {
         // Cachea todo el bundle JS/CSS en la primera visita
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
         // Imágenes grandes → cache-first (sirve desde caché, actualiza en background)
         runtimeCaching: [
           {
