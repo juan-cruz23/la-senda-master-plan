@@ -84,11 +84,11 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024, // 8 MB
       },
       manifest: {
-        name: 'NATIVE San José',
-        short_name: 'NATIVE',
-        description: 'Masterplan interactivo — Parcelación NATIVE',
-        theme_color: '#0a1622',
-        background_color: '#0a1622',
+        name: 'La Senda',
+        short_name: 'La Senda',
+        description: 'Masterplan interactivo — Parcelación La Senda',
+        theme_color: '#1C2A17',
+        background_color: '#1C2A17',
         display: 'standalone',
         orientation: 'landscape',
         icons: [

@@ -9,7 +9,7 @@ import { X, ChevronRight } from 'lucide-react'
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 const glass = {
-  background: 'rgba(10,22,34,0.93)',
+  background: 'rgba(28,42,23,0.93)',
   backdropFilter: 'blur(20px) saturate(180%)',
   WebkitBackdropFilter: 'blur(20px) saturate(180%)',
   boxShadow: '0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',

@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 
 const ESTADO_COLORS = {
   disponible: {
-    fill: '#9A7D4A',
-    fillHover: '#C4B49A',
-    stroke: '#C4B49A',
+    fill: '#9A7D45',
+    fillHover: '#B8C89A',
+    stroke: '#B8C89A',
     fillOpacity: 0.35,
     strokeOpacity: 0.8,
   },
@@ -56,9 +56,9 @@ export default function LotesSVG({ lotes, zonas, selectedId, onSelectLote, viewB
         <g key={zona.id}>
           <polygon
             points={zona.puntos}
-            fill="#C4B49A"
+            fill="#B8C89A"
             fillOpacity={0.08}
-            stroke="#C4B49A"
+            stroke="#B8C89A"
             strokeOpacity={0.3}
             strokeWidth={1}
             strokeDasharray="4 3"
@@ -69,7 +69,7 @@ export default function LotesSVG({ lotes, zonas, selectedId, onSelectLote, viewB
             y={zona.cy}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#C4B49A"
+            fill="#B8C89A"
             fillOpacity={0.5}
             fontSize={9}
             fontFamily="Inter, sans-serif"

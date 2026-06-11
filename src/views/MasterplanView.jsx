@@ -40,7 +40,7 @@ function LoginModal({ onClose, onLogin }) {
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <motion.form onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 20, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-        style={{ background: 'rgba(10,22,34,0.98)', border: '1px solid rgba(255,255,255,0.10)',
+        style={{ background: 'rgba(28,42,23,0.98)', border: '1px solid rgba(255,255,255,0.10)',
           borderRadius: 20, padding: '32px 28px', width: 320,
           boxShadow: '0 32px 80px rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
@@ -60,7 +60,7 @@ function LoginModal({ onClose, onLogin }) {
         <button type="submit" disabled={loading}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             padding: '12px', borderRadius: 11, border: 'none', cursor: loading ? 'wait' : 'pointer',
-            background: '#C4B49A', color: '#0a1622', fontSize: 13, fontWeight: 700, ...F }}>
+            background: '#B8C89A', color: '#1C2A17', fontSize: 13, fontWeight: 700, ...F }}>
           {loading ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <LogIn size={14} />}
           {loading ? 'Entrando…' : 'Entrar'}
         </button>
@@ -104,7 +104,7 @@ export default function MasterplanView() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s))
 
     // Cargar estados desde Supabase
-    supabase.from('lote_estados').select('id, estado').then(({ data }) => {
+    supabase.from('lasenda_estados').select('id, estado').then(({ data }) => {
       if (!data) return
       const map = Object.fromEntries(data.map(r => [r.id, r.estado]))
       setLotes(prev => prev.map(l => ({ ...l, estado: map[l.id] ?? l.estado })))
@@ -143,7 +143,7 @@ export default function MasterplanView() {
     if (!session) return                                    // solo si está logueado
     setLotes(prev => prev.map(l => l.id === id ? { ...l, estado: newEstado } : l))
     setSelectedLote(prev => prev?.id === id ? { ...prev, estado: newEstado } : prev)
-    await supabase.from('lote_estados').update({ estado: newEstado }).eq('id', id)
+    await supabase.from('lasenda_estados').update({ estado: newEstado }).eq('id', id)
   }, [session])
 
   // Zoom suave hacia un punto del canvas
@@ -189,7 +189,7 @@ export default function MasterplanView() {
   const fitScale = imgNatural ? getFitScale(imgNatural.w, imgNatural.h) : 1
 
   return (
-    <div className="relative w-full h-full overflow-hidden" style={{ background: '#59663A' }}>
+    <div className="relative w-full h-full overflow-hidden" style={{ background: '#1C2A17' }}>
 
       {/* Imagen oculta para dimensiones naturales */}
       {!imgNatural && (
@@ -243,7 +243,7 @@ export default function MasterplanView() {
                 contentStyle={{ position: 'relative', lineHeight: 0 }}
               >
                 <div style={{ width: imgNatural.w, height: imgNatural.h, position: 'relative' }}>
-                  <img src={IMAGEN} alt="Masterplan NATIVE"
+                  <img src={IMAGEN} alt="Masterplan La Senda"
                     style={{ width: '100%', height: '100%', display: 'block' }}
                     draggable={false} />
 
@@ -260,6 +260,7 @@ export default function MasterplanView() {
                           setZonePopup(null)
                           setSelectedLote(null)   // cierra panel de lote si estaba abierto
                           zoomToPoint(zona.cx, zona.cy)
+                          if (zona.id === 'Z2' || zona.id === 'Z4') return
                           const fitS  = Math.min(window.innerWidth / imgNatural.w, window.innerHeight / imgNatural.h)
                           const scale = Math.min(fitS * 4, 6)
                           const haloR = Math.round(imgNatural.w * 0.008 * 1.7 * scale)
@@ -277,6 +278,7 @@ export default function MasterplanView() {
                     />
                   </svg>
 
+
                 </div>
               </TransformComponent>
 
@@ -291,13 +293,13 @@ export default function MasterplanView() {
                       <div style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         padding: '6px 16px', borderRadius: 16,
-                        background: 'rgba(11,30,45,0.80)',
+                        background: 'rgba(8,16,6,0.88)',
                         backdropFilter: 'blur(20px) saturate(180%)',
                         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                        border: '1px solid rgba(196,180,154,0.20)',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07)',
+                        border: '1px solid rgba(184,200,154,0.15)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
                       }}>
-                        <img src="/logo.png" alt="NATIVE"
+                        <img src="/logo.png" alt="La Senda"
                           style={{ width: 200, height: 'auto', display: 'block' }} />
                       </div>
                     </motion.div>
@@ -315,10 +317,10 @@ export default function MasterplanView() {
                     onClick={toggleFullscreen}
                     title={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
                     className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-                    style={{ background: isFullscreen ? 'rgba(196,180,154,0.15)' : 'rgba(11,30,45,0.80)',
+                    style={{ background: isFullscreen ? 'rgba(184,200,154,0.15)' : 'rgba(28,42,23,0.80)',
                       backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                      border: isFullscreen ? '1px solid rgba(196,180,154,0.4)' : '1px solid rgba(196,180,154,0.20)',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: isFullscreen ? '#C4B49A' : 'rgba(255,255,255,0.45)' }}>
+                      border: isFullscreen ? '1px solid rgba(184,200,154,0.4)' : '1px solid rgba(184,200,154,0.20)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: isFullscreen ? '#B8C89A' : 'rgba(255,255,255,0.45)' }}>
                     {isFullscreen ? <Shrink size={14} /> : <Expand size={14} />}
                   </button>
                   {/* Login / logout */}
@@ -326,9 +328,9 @@ export default function MasterplanView() {
                     onClick={() => session ? supabase.auth.signOut() : setShowLogin(true)}
                     title={session ? 'Cerrar sesión' : 'Iniciar sesión'}
                     className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-                    style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(11,30,45,0.80)',
+                    style={{ background: session ? 'rgba(78,205,196,0.15)' : 'rgba(28,42,23,0.80)',
                       backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                      border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(196,180,154,0.20)',
+                      border: session ? '1px solid rgba(78,205,196,0.4)' : '1px solid rgba(184,200,154,0.20)',
                       boxShadow: '0 4px 16px rgba(0,0,0,0.25)', color: session ? '#4ECDC4' : 'rgba(255,255,255,0.45)' }}>
                     {session ? <LogOut size={14} /> : <LogIn size={14} />}
                   </button>
@@ -353,7 +355,7 @@ export default function MasterplanView() {
                   ].map(({ icon, action, label }) => (
                     <button key={label} onClick={action} title={label}
                       className="w-9 h-9 rounded-xl flex items-center justify-center text-white/40 hover:text-white/80 transition-all"
-                      style={{ background: 'rgba(11,30,45,0.80)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(196,180,154,0.20)', boxShadow: '0 4px 16px rgba(0,0,0,0.25)', pointerEvents: 'auto' }}>
+                      style={{ background: 'rgba(28,42,23,0.80)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(184,200,154,0.20)', boxShadow: '0 4px 16px rgba(0,0,0,0.25)', pointerEvents: 'auto' }}>
                       {icon}
                     </button>
                   ))}
@@ -419,7 +421,7 @@ export default function MasterplanView() {
           top:  zonaTooltip.y - 12,
           zIndex: 9999,
           pointerEvents: 'none',
-          background: 'rgba(11,30,45,0.82)',
+          background: 'rgba(28,42,23,0.82)',
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(32px) saturate(160%)',
           border: `1px solid ${zonaTooltip.zona.color}55`,

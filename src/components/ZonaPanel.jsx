@@ -73,10 +73,10 @@ export default function ZonaPanel({ zona, onClose }) {
               zIndex: 9100,
               display: 'flex',
               flexDirection: 'column',
-              background: 'rgba(10,22,34,0.97)',
+              background: 'rgba(28,42,23,0.97)',
               backdropFilter: 'blur(52px) saturate(180%)',
               WebkitBackdropFilter: 'blur(52px) saturate(180%)',
-              borderLeft: `1px solid rgba(196,180,154,0.14)`,
+              borderLeft: `1px solid rgba(184,200,154,0.14)`,
               boxShadow: `-32px 0 80px rgba(0,0,0,0.55)`,
               pointerEvents: 'auto',
             }}
@@ -120,7 +120,7 @@ export default function ZonaPanel({ zona, onClose }) {
               {hasImages && !currentImgFailed && (
                 <div style={{
                   position: 'absolute', bottom: 0, left: 0, right: 0, height: 60,
-                  background: 'linear-gradient(to top, rgba(10,22,34,0.8), transparent)',
+                  background: 'linear-gradient(to top, rgba(28,42,23,0.8), transparent)',
                   pointerEvents: 'none',
                 }} />
               )}

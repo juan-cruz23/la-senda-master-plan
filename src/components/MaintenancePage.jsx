@@ -3,13 +3,13 @@ export default function MaintenancePage() {
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: '#0a1622',
+      background: '#1C2A17',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-      color: '#c4b49a',
+      color: '#B8C89A',
       textAlign: 'center',
       padding: '32px',
     }}>
@@ -18,7 +18,7 @@ export default function MaintenancePage() {
         fontSize: 11,
         letterSpacing: '0.35em',
         textTransform: 'uppercase',
-        color: 'rgba(196,180,154,0.5)',
+        color: 'rgba(184,200,154,0.5)',
         marginBottom: 20,
       }}>
         Parcelación
@@ -29,17 +29,17 @@ export default function MaintenancePage() {
         fontWeight: 200,
         letterSpacing: '0.18em',
         textTransform: 'uppercase',
-        color: '#c4b49a',
+        color: '#B8C89A',
         marginBottom: 8,
       }}>
-        NATIVE
+        LA SENDA
       </div>
 
       {/* Separador */}
       <div style={{
         width: 48,
         height: 1,
-        background: 'rgba(196,180,154,0.25)',
+        background: 'rgba(184,200,154,0.25)',
         marginBottom: 48,
       }} />
 
@@ -47,7 +47,7 @@ export default function MaintenancePage() {
       <div style={{
         fontSize: 'clamp(13px, 2vw, 15px)',
         letterSpacing: '0.1em',
-        color: 'rgba(196,180,154,0.65)',
+        color: 'rgba(184,200,154,0.65)',
         lineHeight: 1.8,
         maxWidth: 380,
       }}>

@@ -1,24 +1,16 @@
-import MaintenancePage from './components/MaintenancePage'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import MasterplanView from './views/MasterplanView'
+import { preloadAllImages } from './utils/preloadImages'
 
-// ── MANTENIMIENTO ──────────────────────────────────────────────────
-// Para reactivar la app, eliminá estas dos líneas y descomentá el
-// bloque original de abajo.
-export default function App() { return <MaintenancePage /> }
-// ──────────────────────────────────────────────────────────────────
-
-// import { useEffect } from 'react'
-// import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-// import MasterplanView from './views/MasterplanView'
-// import { preloadAllImages } from './utils/preloadImages'
-//
-// export default function App() {
-//   useEffect(() => { preloadAllImages() }, [])
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-//         <Route path="/" element={<MasterplanView />} />
-//         <Route path="*" element={<Navigate to="/" replace />} />
-//       </Routes>
-//     </BrowserRouter>
-//   )
-// }
+export default function App() {
+  useEffect(() => { preloadAllImages() }, [])
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MasterplanView />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}

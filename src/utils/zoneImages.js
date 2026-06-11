@@ -50,7 +50,7 @@ function buildMap() {
 
 export const zoneImagesMap = buildMap()
 
-/** Devuelve { images360, images } para un ID de zona dado */
-export function getZoneImages(zoneId) {
-  return zoneImagesMap[zoneId] ?? { images360: [], images: [] }
+/** Devuelve { images360, images } para un código de zona (PC, EB, PL…) */
+export function getZoneImages(zonaCodigo) {
+  return zoneImagesMap[zonaCodigo] ?? { images360: [], images: [] }
 }

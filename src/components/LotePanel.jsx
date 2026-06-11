@@ -15,7 +15,7 @@ const allImplantaciones = import.meta.glob(
 )
 
 function getImplantImages(topografia) {
-  const key = topografia ?? 'Standard'
+  const key = topografia ?? 'Esencia'
   return Object.entries(allImplantaciones)
     .filter(([path]) => path.includes(`/implantaciones/${key}/`))
     .map(([, mod]) => mod.default)
@@ -29,10 +29,16 @@ const ESTADO_CFG = {
   vendido:    { color: '#ef4444',  label: 'Vendido',    bg: 'rgba(239,68,68,0.15)',   border: 'rgba(239,68,68,0.4)'    },
 }
 
+const ETAPA_CFG = {
+  'Etapa 1': { color: '#B8C89A', bg: 'rgba(184,200,154,0.08)' },
+  'Etapa 2': { color: '#7BBFDA', bg: 'rgba(123,191,218,0.08)' },
+  'Etapa 3': { color: '#DBA96A', bg: 'rgba(219,169,106,0.08)' },
+}
+
 const TOPO_CFG = {
-  Premium:   { nombre: 'Legado',      tipo: 'Lotes Premium',   color: '#C4B49A', bg: 'rgba(154,125,74,0.08)',   desc: '7.8% – 30% de pendiente'  },
-  Standard:  { nombre: 'Pertenencia', tipo: 'Lotes Standard',  color: '#7BBFDA', bg: 'rgba(123,191,218,0.08)', desc: '30% – 60% de pendiente'   },
-  Pendiente: { nombre: 'Origen',      tipo: 'Lotes Pendiente', color: '#DBA96A', bg: 'rgba(219,169,106,0.08)', desc: '60% – 80% de pendiente'   },
+  Esencia: { color: '#8B9E6E', bg: 'rgba(139,158,110,0.08)', desc: '0% – 40% pendiente'  },
+  Camino:  { color: '#9A7D45', bg: 'rgba(154,125,69,0.08)',  desc: '40% – 60% pendiente' },
+  Paisaje: { color: '#DBA96A', bg: 'rgba(219,169,106,0.08)', desc: '> 60% pendiente'      },
 }
 
 const ESTADOS = ['disponible', 'reservado', 'vendido']
@@ -46,7 +52,8 @@ const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = false }) {
   const isMobile = useIsMobile()
   const cfg      = ESTADO_CFG[lote?.estado] ?? ESTADO_CFG.disponible
-  const topo     = TOPO_CFG[lote?.topografia] ?? { color: '#C4B49A', bg: 'rgba(154,125,74,0.08)', desc: '' }
+  const topo     = TOPO_CFG[lote?.topografia] ?? { color: '#8B9E6E', bg: 'rgba(139,158,110,0.08)', desc: '' }
+  const etapaCfg = ETAPA_CFG[lote?.etapa]    ?? { color: '#B8C89A', bg: 'rgba(184,200,154,0.08)' }
   const images   = lote ? getImplantImages(lote.topografia) : []
   const [imgIdx,    setImgIdx]    = useState(0)
   const [lightbox,  setLightbox]  = useState(false)
@@ -94,10 +101,10 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
             zIndex: 9100,
             display: 'flex',
             flexDirection: 'column',
-            background: 'rgba(10,22,34,0.98)',
+            background: 'rgba(28,42,23,0.98)',
             backdropFilter: 'blur(12px) saturate(180%)',
             WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-            borderTop: '1px solid rgba(196,180,154,0.18)',
+            borderTop: '1px solid rgba(184,200,154,0.18)',
             borderRadius: '24px 24px 0 0',
             boxShadow: '0 -24px 72px rgba(0,0,0,0.5)',
             pointerEvents: 'auto',
@@ -110,10 +117,10 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
             zIndex: 9100,
             display: 'flex',
             flexDirection: 'column',
-            background: 'rgba(10,22,34,0.84)',
+            background: 'rgba(28,42,23,0.84)',
             backdropFilter: 'blur(32px) saturate(200%)',
             WebkitBackdropFilter: 'blur(32px) saturate(200%)',
-            borderLeft: '1px solid rgba(196,180,154,0.18)',
+            borderLeft: '1px solid rgba(184,200,154,0.18)',
             boxShadow: '-24px 0 72px rgba(0,0,0,0.35)',
             pointerEvents: 'auto',
             willChange: 'transform',
@@ -149,7 +156,7 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
               {/* Título */}
               <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
                 <p style={{ margin: '0 0 4px', color: 'rgba(255,255,255,0.32)', fontSize: 10, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', ...F }}>
-                  Parcelación Native
+                  Parcelación La Senda
                 </p>
                 <h2 style={{ margin: 0, color: '#fff', fontSize: 26, fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.1, ...F }}>
                   {lote.nombre}
@@ -176,34 +183,37 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
           {/* ── Cuerpo scrollable ── */}
           <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
 
-            {/* ── Topografía HERO (bloque completo) ── */}
+            {/* ── Etapa + Pendiente HERO ── */}
             <div style={{
               padding: '22px 24px',
               background: topo.bg,
               borderBottom: `1px solid ${topo.color}20`,
-              position: 'relative',
-              overflow: 'hidden',
+              position: 'relative', overflow: 'hidden',
+              display: 'flex', gap: 16,
             }}>
               {/* Franja de color izquierda */}
               <div style={{
                 position: 'absolute', left: 0, top: 0, bottom: 0, width: 4,
-                background: topo.color,
-                borderRadius: '0 2px 2px 0',
+                background: topo.color, borderRadius: '0 2px 2px 0',
               }} />
-              <p style={{ margin: '0 0 6px', color: 'rgba(255,255,255,0.50)', fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', ...F }}>
-                Categoría
-              </p>
-              <p style={{ margin: '0 0 6px', color: '#fff', fontSize: 28, fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1, ...F }}>
-                {topo.nombre ?? lote.topografia}
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 2 }}>
-                <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 11, fontWeight: 600, ...F }}>
-                  {topo.tipo}
-                </span>
-                <span style={{ color: 'rgba(255,255,255,0.20)', fontSize: 10 }}>·</span>
-                <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, ...F }}>
-                  {topo.desc}
-                </span>
+
+              {/* Etapa */}
+              {lote.etapa && (
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: '0 0 4px', color: 'rgba(255,255,255,0.40)', fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', ...F }}>Etapa</p>
+                  <p style={{ margin: 0, color: etapaCfg.color, fontSize: 20, fontWeight: 800, letterSpacing: '-0.01em', lineHeight: 1.1, ...F }}>
+                    {lote.etapa}
+                  </p>
+                </div>
+              )}
+
+              {/* Pendiente */}
+              <div style={{ flex: 1 }}>
+                <p style={{ margin: '0 0 4px', color: 'rgba(255,255,255,0.40)', fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', ...F }}>Pendiente</p>
+                <p style={{ margin: '0 0 2px', color: '#fff', fontSize: 20, fontWeight: 800, letterSpacing: '-0.01em', lineHeight: 1.1, ...F }}>
+                  {lote.topografia ?? '—'}
+                </p>
+                <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, ...F }}>{topo.desc}</span>
               </div>
             </div>
 
@@ -280,7 +290,7 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
                       Implantación sugerida
                     </p>
                     <p style={{ margin: 0, color: topo.color, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', ...F }}>
-                      {topo.nombre ?? lote.topografia}
+                      {lote.topografia ?? '—'}
                     </p>
                   </div>
                   {images.length > 1 && (
@@ -398,7 +408,7 @@ export default function LotePanel({ lote, onClose, onEstadoChange, canEdit = fal
                 Implantación sugerida
               </p>
               <p style={{ margin: '3px 0 0', color: topo.color, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', ...F }}>
-                {topo.nombre}
+                {lote?.topografia ?? '—'}
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>

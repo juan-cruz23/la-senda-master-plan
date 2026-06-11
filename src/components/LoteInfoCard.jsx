@@ -13,13 +13,13 @@ const ESTADO_CFG = {
 }
 
 const TOPO_CFG = {
-  Premium:   { icon: '━', desc: 'Lote Legado · 7.8% – 30% de pendiente'     },
-  Standard:  { icon: '╱', desc: 'Lote Pertenencia · 30% – 60% de pendiente' },
-  Pendiente: { icon: '▲', desc: 'Lote Origen · 60% – 80% de pendiente'      },
+  Esencia: { icon: '◇', desc: '0% – 40% pendiente'  },
+  Camino:  { icon: '◈', desc: '40% – 60% pendiente' },
+  Paisaje: { icon: '◆', desc: '> 60% pendiente'      },
 }
 
 const glass = {
-  background: 'rgba(10,22,34,0.90)',
+  background: 'rgba(28,42,23,0.90)',
   backdropFilter: 'blur(52px) saturate(160%)',
   WebkitBackdropFilter: 'blur(52px) saturate(160%)',
   border: '1px solid rgba(255,255,255,0.08)',
@@ -139,7 +139,7 @@ function StatBox({ label, value, accent, color, icon, desc }) {
         {icon && <span style={{ color: 'rgba(255,255,255,0.25)' }}>{icon}</span>}
         <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{label}</span>
       </div>
-      <span style={{ color: accent ? (color ?? '#C4B49A') : 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>{value}</span>
+      <span style={{ color: accent ? (color ?? '#B8C89A') : 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>{value}</span>
       {desc && (
         <p style={{ margin: '4px 0 0', color: 'rgba(255,255,255,0.28)', fontSize: 9, lineHeight: 1.5, letterSpacing: '0.01em' }}>
           {desc}

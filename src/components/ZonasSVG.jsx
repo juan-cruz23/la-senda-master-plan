@@ -18,6 +18,8 @@ export default function ZonasSVG({ zonas, imgW, imgH, onZoom, onSelect, onHover,
         const isHov = hovered === zona.id
         const rad = isHov ? r * 1.25 : r
         const fontSize = r * 0.75
+        const hasIcon = ['PC', 'EB', 'PL', 'EN'].includes(zona.codigo)
+        const iconSize = rad * 2.8
 
         return (
           <g
@@ -37,32 +39,44 @@ export default function ZonasSVG({ zonas, imgW, imgH, onZoom, onSelect, onHover,
             {/* Halo */}
             <circle
               cx={cx} cy={cy} r={rad * 1.7}
-              fill={zona.color} fillOpacity={isHov ? 0.15 : 0.08}
+              fill={zona.color} fillOpacity={isHov ? 0.18 : 0.08}
               style={{ transition: 'all 0.25s' }}
             />
 
-            {/* Círculo principal */}
-            <circle
-              cx={cx} cy={cy} r={rad}
-              fill={isHov ? zona.color : 'rgba(0,0,0,0.6)'}
-              stroke={zona.color}
-              strokeWidth={rad * 0.12}
-              style={{ transition: 'all 0.25s' }}
-            />
-
-            {/* Código */}
-            <text
-              x={cx} y={cy}
-              textAnchor="middle" dominantBaseline="central"
-              fill={isHov ? '#050a06' : zona.color}
-              fontSize={zona.codigo.length > 2 ? fontSize * 0.85 : fontSize}
-              fontWeight="700"
-              fontFamily="Inter, system-ui, sans-serif"
-              letterSpacing="0.03em"
-              style={{ pointerEvents: 'none', userSelect: 'none', transition: 'all 0.25s' }}
-            >
-              {zona.codigo}
-            </text>
+            {hasIcon ? (
+              /* PNG icon — sin círculo de fondo */
+              <image
+                href={`/${zona.codigo}.png`}
+                x={cx - iconSize / 2}
+                y={cy - iconSize / 2}
+                width={iconSize}
+                height={iconSize}
+                style={{ transition: 'all 0.25s', opacity: 1 }}
+              />
+            ) : (
+              <>
+                {/* Círculo principal (fallback para PM y otros sin ícono) */}
+                <circle
+                  cx={cx} cy={cy} r={rad}
+                  fill={isHov ? zona.color : 'rgba(0,0,0,0.6)'}
+                  stroke={zona.color}
+                  strokeWidth={rad * 0.12}
+                  style={{ transition: 'all 0.25s' }}
+                />
+                <text
+                  x={cx} y={cy}
+                  textAnchor="middle" dominantBaseline="central"
+                  fill={isHov ? '#050a06' : zona.color}
+                  fontSize={zona.codigo.length > 2 ? fontSize * 0.85 : fontSize}
+                  fontWeight="700"
+                  fontFamily="Inter, system-ui, sans-serif"
+                  letterSpacing="0.03em"
+                  style={{ pointerEvents: 'none', userSelect: 'none', transition: 'all 0.25s' }}
+                >
+                  {zona.codigo}
+                </text>
+              </>
+            )}
           </g>
         )
       })}

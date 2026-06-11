@@ -18,8 +18,14 @@ const TABS = [
   { id: 'zonas',    Icon: Landmark,          label: 'Zonas'    },
 ]
 
-const ESTADOS = ['disponible', 'reservado', 'vendido']
-const TOPOS   = ['Premium', 'Standard', 'Pendiente']
+const ESTADOS  = ['disponible', 'reservado', 'vendido']
+const ETAPAS   = ['Etapa 1', 'Etapa 2', 'Etapa 3']
+const TOPOS    = ['Esencia', 'Camino', 'Paisaje']
+const TOPO_DESC = {
+  Esencia: '0% – 40%',
+  Camino:  '40% – 60%',
+  Paisaje: '> 60%',
+}
 
 const ESTADO_CFG = {
   disponible: { color: '#4ECDC4', label: 'Disponible' },
@@ -30,22 +36,22 @@ const ESTADO_CFG = {
 // ── Glass tokens ─────────────────────────────────────────────────────────────
 const glass = {
   panel: {
-    background: 'rgba(10,22,34,0.92)',
+    background: 'rgba(28,42,23,0.94)',
     backdropFilter: 'blur(24px) saturate(180%)',
     WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-    border: '1px solid rgba(196,180,154,0.18)',
+    border: '1px solid rgba(184,200,154,0.18)',
     boxShadow: '0 32px 80px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.07)',
   },
   dock: {
-    background: 'rgba(11,30,45,0.88)',
+    background: 'rgba(28,42,23,0.90)',
     backdropFilter: 'blur(20px) saturate(180%)',
     WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-    border: '1px solid rgba(196,180,154,0.18)',
+    border: '1px solid rgba(184,200,154,0.18)',
     boxShadow: '0 16px 48px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
   },
   card: {
-    background: 'rgba(196,180,154,0.06)',
-    border: '1px solid rgba(196,180,154,0.12)',
+    background: 'rgba(184,200,154,0.06)',
+    border: '1px solid rgba(184,200,154,0.12)',
     borderRadius: 14,
   },
 }
@@ -68,24 +74,33 @@ export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEs
   const areas   = useMemo(() => lotes.map(l => l.area),   [lotes])
 
   const [activeTab, setActiveTab] = useState(null)
-  const [fEstado, setFEstado]     = useState([])
-  const [fTopo,   setFTopo]       = useState([])
+  const [fEstado,  setFEstado]    = useState([])
+  const [fEtapa,   setFEtapa]     = useState([])
+  const [fTopo,    setFTopo]      = useState([])
 
   const toggleTab = id => setActiveTab(prev => prev === id ? null : id)
 
   const toggleEstado = e => {
     const next = fEstado.includes(e) ? fEstado.filter(x => x !== e) : [...fEstado, e]
-    setFEstado(next); onFiltersChange?.({ estado: next, topo: fTopo })
+    setFEstado(next); onFiltersChange?.({ estado: next, etapa: fEtapa, topo: fTopo })
+  }
+  const toggleEtapa = e => {
+    const next = fEtapa.includes(e) ? fEtapa.filter(x => x !== e) : [...fEtapa, e]
+    setFEtapa(next); onFiltersChange?.({ estado: fEstado, etapa: next, topo: fTopo })
   }
   const toggleTopo = t => {
     const next = fTopo.includes(t) ? fTopo.filter(x => x !== t) : [...fTopo, t]
-    setFTopo(next); onFiltersChange?.({ estado: fEstado, topo: next })
+    setFTopo(next); onFiltersChange?.({ estado: fEstado, etapa: fEtapa, topo: next })
   }
-  const resetFilters = () => { setFEstado([]); setFTopo([]); onFiltersChange?.({ estado: [], topo: [] }) }
+  const resetFilters = () => {
+    setFEstado([]); setFEtapa([]); setFTopo([])
+    onFiltersChange?.({ estado: [], etapa: [], topo: [] })
+  }
 
-  const hasFilters  = fEstado.length > 0 || fTopo.length > 0
-  const lotesMatch  = lotes.filter(l =>
+  const hasFilters = fEstado.length > 0 || fEtapa.length > 0 || fTopo.length > 0
+  const lotesMatch = lotes.filter(l =>
     (fEstado.length === 0 || fEstado.includes(l.estado)) &&
+    (fEtapa.length  === 0 || fEtapa.includes(l.etapa)) &&
     (fTopo.length   === 0 || fTopo.includes(l.topografia))
   ).length
 
@@ -123,7 +138,7 @@ export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEs
             <div style={{ maxHeight: 'calc(64vh - 57px)', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <AnimatePresence mode="wait">
                 {activeTab === 'proyecto' && <motion.div key="p" {...fadeUp}><TabProyecto lotes={lotes} stats={stats} areas={areas} /></motion.div>}
-                {activeTab === 'filtrar'  && <motion.div key="f" {...fadeUp}><TabFiltrar lotes={lotes} stats={stats} fEstado={fEstado} fTopo={fTopo} toggleEstado={toggleEstado} toggleTopo={toggleTopo} lotesMatch={lotesMatch} hasFilters={hasFilters} resetFilters={resetFilters} /></motion.div>}
+                {activeTab === 'filtrar'  && <motion.div key="f" {...fadeUp}><TabFiltrar lotes={lotes} stats={stats} fEstado={fEstado} fEtapa={fEtapa} fTopo={fTopo} toggleEstado={toggleEstado} toggleEtapa={toggleEtapa} toggleTopo={toggleTopo} lotesMatch={lotesMatch} hasFilters={hasFilters} resetFilters={resetFilters} /></motion.div>}
                 {activeTab === 'zonas'    && <motion.div key="z" {...fadeUp}><TabZonas zonas={zonas} onSelect={z => { setActiveTab(null); onSelectZona?.(z) }} /></motion.div>}
               </AnimatePresence>
             </div>
@@ -157,14 +172,14 @@ export default function BottomNav({ lotes: lotesProp, onFiltersChange, onResetEs
 
               {/* Filter dot */}
               {id === 'filtrar' && hasFilters && (
-                <span style={{ position: 'absolute', top: 8, right: 26, width: 5, height: 5, borderRadius: '50%', background: '#9A7D4A' }} />
+                <span style={{ position: 'absolute', top: 8, right: 26, width: 5, height: 5, borderRadius: '50%', background: '#9A7D45' }} />
               )}
 
               <Icon
                 size={16}
-                style={{ position: 'relative', zIndex: 1, color: isActive ? '#C4B49A' : 'rgba(255,255,255,0.32)', transition: 'color .2s' }}
+                style={{ position: 'relative', zIndex: 1, color: isActive ? '#B8C89A' : 'rgba(255,255,255,0.32)', transition: 'color .2s' }}
               />
-              <span style={{ position: 'relative', zIndex: 1, fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: isActive ? '#C4B49A' : 'rgba(255,255,255,0.28)', transition: 'color .2s' }}>
+              <span style={{ position: 'relative', zIndex: 1, fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: isActive ? '#B8C89A' : 'rgba(255,255,255,0.28)', transition: 'color .2s' }}>
                 {label}
               </span>
             </button>
@@ -183,10 +198,10 @@ function TabProyecto({ lotes, stats, areas }) {
       {/* Hero text */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-          <MapPin size={11} style={{ color: '#C4B49A' }} />
-          <span style={{ color: 'rgba(196,180,154,0.6)', fontSize: 10, letterSpacing: '0.1em' }}>Etapa 1 · Venta de lotes</span>
+          <MapPin size={11} style={{ color: '#B8C89A' }} />
+          <span style={{ color: 'rgba(184,200,154,0.6)', fontSize: 10, letterSpacing: '0.1em' }}>Etapa 1 · Venta de lotes</span>
         </div>
-        <h2 style={{ color: '#fff', fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1, margin: 0 }}>NATIVE</h2>
+        <h2 style={{ color: '#fff', fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1, margin: 0 }}>LA SENDA</h2>
         <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11, marginTop: 6 }}>{lotes.length} lotes · Entrega Dic 2026</p>
       </div>
 
@@ -209,7 +224,7 @@ function TabProyecto({ lotes, stats, areas }) {
           <div key={label}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '13px 0' }}>
               <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>{label}</span>
-              <span style={{ color: accent ? '#C4B49A' : 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 700 }}>{value}</span>
+              <span style={{ color: accent ? '#B8C89A' : 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 700 }}>{value}</span>
             </div>
             {i < arr.length - 1 && <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />}
           </div>
@@ -221,7 +236,7 @@ function TabProyecto({ lotes, stats, areas }) {
 }
 
 // ── TAB FILTRAR ───────────────────────────────────────────────────────────────
-function TabFiltrar({ lotes, stats, fEstado, fTopo, toggleEstado, toggleTopo, lotesMatch, hasFilters, resetFilters }) {
+function TabFiltrar({ lotes, stats, fEstado, fEtapa, fTopo, toggleEstado, toggleEtapa, toggleTopo, lotesMatch, hasFilters, resetFilters }) {
   return (
     <div style={{ padding: '24px 24px 28px', display: 'flex', flexDirection: 'column', gap: 22 }}>
 
@@ -233,16 +248,12 @@ function TabFiltrar({ lotes, stats, fEstado, fTopo, toggleEstado, toggleTopo, lo
             const cfg    = ESTADO_CFG[e]
             const active = fEstado.includes(e)
             return (
-              <button
-                key={e}
-                onClick={() => toggleEstado(e)}
-                style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-                  padding: '14px 8px', borderRadius: 12, cursor: 'pointer', transition: 'all .2s',
-                  background: active ? `${cfg.color}18` : 'rgba(255,255,255,0.04)',
-                  border: active ? `1px solid ${cfg.color}40` : '1px solid rgba(255,255,255,0.06)',
-                }}
-              >
+              <button key={e} onClick={() => toggleEstado(e)} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                padding: '14px 8px', borderRadius: 12, cursor: 'pointer', transition: 'all .2s',
+                background: active ? `${cfg.color}18` : 'rgba(255,255,255,0.04)',
+                border: active ? `1px solid ${cfg.color}40` : '1px solid rgba(255,255,255,0.06)',
+              }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: active ? cfg.color : 'rgba(255,255,255,0.15)' }} />
                 <span style={{ fontSize: 10, fontWeight: 600, color: active ? cfg.color : 'rgba(255,255,255,0.4)', textTransform: 'capitalize' }}>{e}</span>
                 <span style={{ fontSize: 16, fontWeight: 800, color: active ? cfg.color : 'rgba(255,255,255,0.5)' }}>{stats[e]}</span>
@@ -252,25 +263,42 @@ function TabFiltrar({ lotes, stats, fEstado, fTopo, toggleEstado, toggleTopo, lo
         </div>
       </div>
 
-      {/* Topografía */}
+      {/* Etapa */}
       <div>
-        <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>Topografía</p>
+        <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>Etapa</p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {ETAPAS.map(e => {
+            const active = fEtapa.includes(e)
+            return (
+              <button key={e} onClick={() => toggleEtapa(e)} style={{
+                flex: 1, padding: '10px 0', borderRadius: 10, cursor: 'pointer', transition: 'all .2s',
+                fontSize: 11, fontWeight: 600,
+                background: active ? 'rgba(184,200,154,0.12)' : 'rgba(255,255,255,0.04)',
+                border: active ? '1px solid rgba(184,200,154,0.4)' : '1px solid rgba(255,255,255,0.07)',
+                color: active ? '#B8C89A' : 'rgba(255,255,255,0.35)',
+              }}>
+                {e}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Pendiente */}
+      <div>
+        <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>Pendiente</p>
         <div style={{ display: 'flex', gap: 8 }}>
           {TOPOS.map(t => {
             const active = fTopo.includes(t)
             return (
-              <button
-                key={t}
-                onClick={() => toggleTopo(t)}
-                style={{
-                  flex: 1, padding: '10px 0', borderRadius: 10, cursor: 'pointer', transition: 'all .2s',
-                  fontSize: 11, fontWeight: 600, textTransform: 'capitalize',
-                  background: active ? 'rgba(196,180,154,0.12)' : 'rgba(255,255,255,0.04)',
-                  border: active ? '1px solid rgba(196,180,154,0.4)' : '1px solid rgba(255,255,255,0.07)',
-                  color: active ? '#C4B49A' : 'rgba(255,255,255,0.35)',
-                }}
-              >
-                {t}
+              <button key={t} onClick={() => toggleTopo(t)} style={{
+                flex: 1, padding: '10px 4px', borderRadius: 10, cursor: 'pointer', transition: 'all .2s',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+                background: active ? 'rgba(154,125,69,0.12)' : 'rgba(255,255,255,0.04)',
+                border: active ? '1px solid rgba(154,125,69,0.4)' : '1px solid rgba(255,255,255,0.07)',
+              }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: active ? '#9A7D45' : 'rgba(255,255,255,0.45)' }}>{t}</span>
+                <span style={{ fontSize: 9, color: active ? 'rgba(154,125,69,0.8)' : 'rgba(255,255,255,0.22)' }}>{TOPO_DESC[t]}</span>
               </button>
             )
           })}
@@ -280,7 +308,7 @@ function TabFiltrar({ lotes, stats, fEstado, fTopo, toggleEstado, toggleTopo, lo
       {/* Resultado */}
       <div style={{ ...glass.card, padding: '18px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: lotesMatch > 0 ? 'rgba(154,125,74,0.10)' : 'rgba(255,255,255,0.04)', border: lotesMatch > 0 ? '1px solid rgba(154,125,74,0.2)' : '1px solid rgba(255,255,255,0.06)' }}>
         <div>
-          <span style={{ fontSize: 36, fontWeight: 800, color: lotesMatch > 0 ? '#9A7D4A' : 'rgba(255,255,255,0.18)', lineHeight: 1 }}>{lotesMatch}</span>
+          <span style={{ fontSize: 36, fontWeight: 800, color: lotesMatch > 0 ? '#9A7D45' : 'rgba(255,255,255,0.18)', lineHeight: 1 }}>{lotesMatch}</span>
           <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, marginTop: 4 }}>
             {lotesMatch === 1 ? 'lote coincide' : 'lotes coinciden'}
           </p>
@@ -327,8 +355,8 @@ function TabZonas({ zonas, onSelect }) {
                 style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, padding: '13px 14px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
               >
                 {/* Badge */}
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(196,180,154,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <span style={{ color: '#C4B49A', fontSize: 9, fontWeight: 800 }}>{zona.codigo}</span>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(184,200,154,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ color: '#B8C89A', fontSize: 9, fontWeight: 800 }}>{zona.codigo}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: 600, margin: 0 }}>{zona.nombre}</p>
@@ -348,12 +376,12 @@ function TabZonas({ zonas, onSelect }) {
                 style={{
                   flexShrink: 0, display: 'flex', alignItems: 'center', gap: 5,
                   padding: '8px 12px', marginRight: 8, borderRadius: 8, cursor: 'pointer',
-                  background: 'rgba(196,180,154,0.08)', border: '1px solid rgba(196,180,154,0.22)',
-                  color: '#C4B49A', fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
+                  background: 'rgba(184,200,154,0.08)', border: '1px solid rgba(184,200,154,0.22)',
+                  color: '#B8C89A', fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
                   transition: 'all .18s',
                 }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(196,180,154,0.18)'; e.currentTarget.style.borderColor = 'rgba(196,180,154,0.45)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(196,180,154,0.08)'; e.currentTarget.style.borderColor = 'rgba(196,180,154,0.22)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(184,200,154,0.18)'; e.currentTarget.style.borderColor = 'rgba(184,200,154,0.45)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(184,200,154,0.08)'; e.currentTarget.style.borderColor = 'rgba(184,200,154,0.22)' }}
               >
                 <MapPin size={10} />
                 Ver

@@ -5,17 +5,18 @@
  */
 
 const ESTADO_COLOR = {
-  disponible: '#0D2E40',
-  reservado:  '#f59e0b',
+  disponible: '#2E4A22',
+  reservado:  '#9A7D45',
   vendido:    '#ef4444',
 }
 
 export default function LoteMarkers({ lotes, imgW, selectedId, onSelect, filters }) {
   const r = imgW * 0.0052   // radio base proporcional a la imagen
 
-  const isFiltered = filters?.estado?.length > 0 || filters?.topo?.length > 0
+  const isFiltered = filters?.estado?.length > 0 || filters?.etapa?.length > 0 || filters?.topo?.length > 0
   const matches = l =>
     (!filters?.estado?.length || filters.estado.includes(l.estado)) &&
+    (!filters?.etapa?.length  || filters.etapa.includes(l.etapa)) &&
     (!filters?.topo?.length   || filters.topo.includes(l.topografia))
 
   return (

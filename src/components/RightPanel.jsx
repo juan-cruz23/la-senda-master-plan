@@ -41,7 +41,8 @@ export default function RightPanel({ onFiltersChange }) {
   const [tab, setTab]       = useState('proyecto')
 
   // Estado de filtros
-  const [fEstado, setFEstado] = useState([])   // vacío = todos
+  const [fEstado, setFEstado] = useState([])
+  const [fEtapa,  setFEtapa]  = useState([])
   const [fTopo,   setFTopo]   = useState([])
   const [fArea,   setFArea]   = useState([Math.min(...areas), Math.max(...areas)])
   const [fPrecio, setFPrecio] = useState([Math.min(...precios), Math.max(...precios)])
@@ -49,22 +50,27 @@ export default function RightPanel({ onFiltersChange }) {
   const toggleEstado = (e) => {
     const next = fEstado.includes(e) ? fEstado.filter(x => x !== e) : [...fEstado, e]
     setFEstado(next)
-    onFiltersChange?.({ estado: next, topo: fTopo })
+    onFiltersChange?.({ estado: next, etapa: fEtapa, topo: fTopo })
+  }
+  const toggleEtapa = (e) => {
+    const next = fEtapa.includes(e) ? fEtapa.filter(x => x !== e) : [...fEtapa, e]
+    setFEtapa(next)
+    onFiltersChange?.({ estado: fEstado, etapa: next, topo: fTopo })
   }
   const toggleTopo = (t) => {
     const next = fTopo.includes(t) ? fTopo.filter(x => x !== t) : [...fTopo, t]
     setFTopo(next)
-    onFiltersChange?.({ estado: fEstado, topo: next })
+    onFiltersChange?.({ estado: fEstado, etapa: fEtapa, topo: next })
   }
   const resetFilters = () => {
-    setFEstado([])
-    setFTopo([])
-    onFiltersChange?.({ estado: [], topo: [] })
+    setFEstado([]); setFEtapa([]); setFTopo([])
+    onFiltersChange?.({ estado: [], etapa: [], topo: [] })
   }
 
   const lotesMatch = lotes.filter(l =>
     (fEstado.length === 0 || fEstado.includes(l.estado)) &&
-    (fTopo.length === 0   || fTopo.includes(l.topografia))
+    (fEtapa.length  === 0 || fEtapa.includes(l.etapa)) &&
+    (fTopo.length   === 0 || fTopo.includes(l.topografia))
   ).length
 
   return (
@@ -144,7 +150,7 @@ function TabProyecto({ stats, areas, precios }) {
       {/* Encabezado proyecto */}
       <div>
         <p className="text-white/35 text-[10px] uppercase tracking-widest mb-1">Proyecto</p>
-        <h2 className="text-white text-2xl font-bold tracking-tight">NATIVE</h2>
+        <h2 className="text-white text-2xl font-bold tracking-tight">LA SENDA</h2>
         <p className="text-sage/70 text-xs mt-0.5">Etapa 1 · Venta de lotes</p>
       </div>
 

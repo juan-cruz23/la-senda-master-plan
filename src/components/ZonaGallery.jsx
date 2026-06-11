@@ -11,10 +11,10 @@ import zonesTour from '../data/zonesTour.json'
 const F = { fontFamily: 'Inter, system-ui, sans-serif' }
 
 const glass = (extra = {}) => ({
-  background: 'rgba(6,14,21,0.62)',
+  background: 'rgba(8,16,8,0.72)',
   backdropFilter: 'blur(24px) saturate(160%)',
   WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-  border: '1px solid rgba(255,255,255,0.10)',
+  border: '1px solid rgba(184,200,154,0.10)',
   ...extra,
 })
 
@@ -46,11 +46,11 @@ function Pano360({ src, color, tourMarkers = [], onMarkerClick, onPanoClick }) {
         <div style="
           width:52px;height:52px;border-radius:50%;
           background:rgba(6,14,21,0.72);backdrop-filter:blur(16px);
-          border:2px solid ${color ?? '#C4B49A'};
-          box-shadow:0 0 24px ${color ?? '#C4B49A'}60,0 4px 16px rgba(0,0,0,0.6);
+          border:2px solid ${color ?? '#B8C89A'};
+          box-shadow:0 0 24px ${color ?? '#B8C89A'}60,0 4px 16px rgba(0,0,0,0.6);
           display:flex;align-items:center;justify-content:center;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="${color ?? '#C4B49A'}" stroke-width="2.2"
+            stroke="${color ?? '#B8C89A'}" stroke-width="2.2"
             stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"/>
           </svg>
@@ -82,7 +82,7 @@ function Pano360({ src, color, tourMarkers = [], onMarkerClick, onPanoClick }) {
         container: ref.current, panorama: src,
         defaultZoomLvl: 0, navbar: ['zoom', 'fullscreen'],
         touchmoveTwoFingers: false, mousewheelCtrlKey: false,
-        loadingColor: color ?? '#C4B49A', loadingTxt: 'Cargando 360°…',
+        loadingColor: color ?? '#B8C89A', loadingTxt: 'Cargando 360°…',
         lang: { zoom: 'Zoom', zoomOut: 'Alejar', zoomIn: 'Acercar', fullscreen: 'Pantalla completa' },
         plugins: [[MarkersPlugin, { markers }]],
       })
@@ -212,7 +212,7 @@ function PhotoGallery({ images, color, zona }) {
         {zoomed && !failed[idx] && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}
-              style={{ position: 'fixed', inset: 0, zIndex: 9500, background: 'rgba(0,0,0,0.97)' }} />
+              style={{ position: 'fixed', inset: 0, zIndex: 9500, background: 'rgba(4,10,4,0.97)' }} />
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
               style={{ position: 'fixed', inset: 0, zIndex: 9501, display: 'flex', flexDirection: 'column' }}>
               <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 18px', background: 'rgba(0,0,0,0.5)' }}>
@@ -431,7 +431,7 @@ function Gallery360({ images360, color, zoneId }) {
                 }}
               >
                 {destinations.map(i => (
-                  <option key={i} value={i} style={{ background: '#0d1e2d' }}>
+                  <option key={i} value={i} style={{ background: '#0d1a0d' }}>
                     Panorama {i + 1} ({images360[i].split('/').pop()})
                   </option>
                 ))}
@@ -542,7 +542,7 @@ function Gallery360({ images360, color, zoneId }) {
 /* ── Modal principal ──────────────────────────────────────────────────────── */
 export default function ZonaGallery({ zona, onClose }) {
   const [mode, setMode] = useState('pano')
-  const { images360, images } = zona ? getZoneImages(zona.id) : { images360: [], images: [] }
+  const { images360, images } = zona ? getZoneImages(zona.codigo) : { images360: [], images: [] }
 
   useEffect(() => { setMode('pano') }, [zona?.id])
   useEffect(() => {
@@ -560,13 +560,13 @@ export default function ZonaGallery({ zona, onClose }) {
           key={zona.id}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          style={{ position: 'fixed', inset: 0, zIndex: 9300, background: '#060e15', pointerEvents: 'auto', overflow: 'hidden' }}
+          style={{ position: 'fixed', inset: 0, zIndex: 9300, background: '#080f08', pointerEvents: 'auto', overflow: 'hidden' }}
         >
           <div style={{ position: 'absolute', inset: 0 }}>
             <AnimatePresence mode="wait">
               {mode === 'pano' ? (
                 <motion.div key="pano" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} style={{ position: 'absolute', inset: 0 }}>
-                  <Gallery360 key={zona.id} images360={images360} color={zona.color} zoneId={zona.id} />
+                  <Gallery360 key={zona.codigo} images360={images360} color={zona.color} zoneId={zona.codigo} />
                 </motion.div>
               ) : (
                 <motion.div key="photos" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} style={{ position: 'absolute', inset: 0 }}>
