@@ -143,7 +143,7 @@ export default function MasterplanView() {
     if (!session) return                                    // solo si está logueado
     setLotes(prev => prev.map(l => l.id === id ? { ...l, estado: newEstado } : l))
     setSelectedLote(prev => prev?.id === id ? { ...prev, estado: newEstado } : prev)
-    await supabase.from('lasenda_estados').update({ estado: newEstado }).eq('id', id)
+    await supabase.from('lasenda_estados').upsert({ id, estado: newEstado, updated_at: new Date().toISOString() })
   }, [session])
 
   // Zoom suave hacia un punto del canvas
